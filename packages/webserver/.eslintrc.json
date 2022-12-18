@@ -1,0 +1,19 @@
+{
+  "ignorePatterns": ["node_modules"],
+  "extends": ["../../.eslintrc.json"],
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "parserOptions": {
+        "allowImportExportEverywhere": false,
+        "ecmaFeatures": {
+          "globalReturn": false
+        },
+        "sourceType": "module",
+        "project": ["./tsconfig.json"],
+        "createDefaultProgram": true,
+        "ecmaVersion": 12
+      }
+    }
+  ]
+}

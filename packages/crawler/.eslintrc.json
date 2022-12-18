@@ -1,0 +1,14 @@
+{
+  "ignorePatterns": ["node_modules"],
+  "extends": ["../../.eslintrc.json"],
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "parserOptions": {
+        "project": ["./tsconfig.json"],
+        "createDefaultProgram": true,
+        "ecmaVersion": 12
+      }
+    }
+  ]
+}

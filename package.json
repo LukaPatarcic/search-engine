@@ -4,7 +4,31 @@
   "workspaces": [
     "packages/*"
   ],
+  "scripts": {
+    "bootstrap": "lerna bootstrap --force-local",
+    "build:only": "lerna run build",
+    "build": "yarn run bootstrap && lerna run build",
+    "lint": "lerna run lint",
+    "clean": "lerna clean --yes",
+    "clean:all": "yarn run clean && rimraf './packages/**/dist'"
+  },
   "devDependencies": {
-    "lerna": "^6.1.0"
+    "@typescript-eslint/eslint-plugin": "^5.46.1",
+    "@typescript-eslint/parser": "^5.46.1",
+    "eslint": "^8.30.0",
+    "eslint-config-node": "^4.1.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard-with-typescript": "^24.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.6.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "lerna": "^6.1.0",
+    "prettier": "^2.8.1",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^4.20.4"
   }
 }
