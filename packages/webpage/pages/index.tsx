@@ -1,23 +1,24 @@
 import Head from 'next/head';
-import { Inter } from '@next/font/google';
 import { useForm } from '@mantine/form';
 import { TextInput, Button } from '@mantine/core';
 import { useRouter } from 'next/router';
-const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
     const router = useRouter();
     const form = useForm({
-        initialValues: { search: '' },
-
-        // functions will be used to validate values at corresponding key
+        initialValues: { search: router?.query?.search?.toString() ?? '' },
         validate: {
             search: (value) => (!value ? 'Please enter a search term' : null),
         },
     });
 
     const onSubmit = (values: { search: string }) => {
+        console.log('here');
         const search = values.search;
+        router.replace({
+            pathname: '/',
+            query: { search },
+        });
         router.push({
             pathname: '/results',
             query: { search },
@@ -32,11 +33,24 @@ export default function Home() {
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <div style={{ width: '100vw', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <form onSubmit={form.onSubmit(onSubmit)}>
-                    <TextInput label="Name" placeholder="Name" {...form.getInputProps('search')} />
+            <div
+                style={{
+                    width: '100vw',
+                    marginTop: 300,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
+            >
+                <h1>Gogol</h1>
+                <form
+                    onSubmit={form.onSubmit((values) => onSubmit(values))}
+                    style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}
+                >
+                    <TextInput style={{ width: 350 }} placeholder="Enter your keyword" {...form.getInputProps('search')} />
                     <Button type="submit" mt="sm">
-                        Submit
+                        Gogol search
                     </Button>
                 </form>
             </div>

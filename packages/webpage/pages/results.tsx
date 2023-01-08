@@ -1,11 +1,31 @@
 import Head from 'next/head';
-import { Inter } from '@next/font/google';
 import { useForm } from '@mantine/form';
 import { TextInput, Button } from '@mantine/core';
-import { GetServerSideProps, GetServerSidePropsContext } from 'next';
-const inter = Inter({ subsets: ['latin'] });
+import { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
 
-export default function Results() {
+interface Props {
+    websites: { url: string; description: string; title: string }[];
+}
+
+export default function Results({ websites }: Props) {
+    const router = useRouter();
+    const form = useForm({
+        initialValues: { search: router?.query?.search?.toString() ?? '' },
+        validate: {
+            search: (value) => (!value ? 'Please enter a search term' : null),
+        },
+    });
+
+    const onSubmit = (values: { search: string }) => {
+        console.log('here');
+        const search = values.search;
+        router.push({
+            pathname: '/results',
+            query: { search },
+        });
+    };
+
     return (
         <>
             <Head>
@@ -14,13 +34,34 @@ export default function Results() {
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <h1>Results</h1>
+            <form onSubmit={form.onSubmit((values) => onSubmit(values))} style={{ display: 'flex', marginTop: 20, marginLeft: 20 }}>
+                <TextInput style={{ width: 350 }} placeholder="Enter your keyword" {...form.getInputProps('search')} />
+                <Button type="submit" ml="md">
+                    Gogol search
+                </Button>
+            </form>
+            <hr style={{ marginTop: 20, marginBottom: 20 }} />
+            {websites.map((website) => (
+                <div style={{ margin: 20 }} key={website.url + website.title}>
+                    <div>
+                        <a href={website.url} rel="noreferrer" target="_blank">
+                            {website.url}
+                        </a>
+                    </div>
+                    <div>
+                        <h3 style={{ margin: 0, wordWrap: 'break-word', width: 500 }}>{website.title}</h3>
+                    </div>
+                    <div>
+                        <p style={{ margin: 0 }}>{website.description}</p>
+                    </div>
+                </div>
+            ))}
         </>
     );
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-    const search = ctx?.params?.search;
+    const search = ctx?.query?.search;
     if (!search) {
         return {
             props: {},
@@ -30,8 +71,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
             },
         };
     }
-    // TODO handle fetch
+    const websites = await fetch(`http://localhost:3333/websites?search=${search}`).then((res) => res.json());
     return {
-        props: {},
+        props: {
+            websites,
+        },
     };
 };
