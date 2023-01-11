@@ -8,13 +8,18 @@ export const crawler = new PlaywrightCrawler({
         const description = await page.$eval('meta[name="description"]', (meta) => {
             return meta.getAttribute('content') ?? '';
         });
-        await WebsiteModel.create({
-            url,
-            title,
-            description,
-            titleNormalized: title.toLowerCase(),
-            descriptionNormalized: description.toLowerCase(),
-        });
+        try {
+            await WebsiteModel.create({
+                url,
+                title,
+                description,
+                titleNormalized: title.toLowerCase(),
+                descriptionNormalized: description.toLowerCase(),
+            });
+        } catch (err) {
+            console.log(err);
+        }
+
         await enqueueLinks();
     },
 });
