@@ -3,6 +3,7 @@ import { useForm } from '@mantine/form';
 import { TextInput, Button } from '@mantine/core';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 interface Props {
     websites: { url: string; description: string; title: string }[];
@@ -18,13 +19,18 @@ export default function Results({ websites }: Props) {
     });
 
     const onSubmit = (values: { search: string }) => {
-        console.log('here');
         const search = values.search;
         router.push({
             pathname: '/results',
             query: { search },
         });
     };
+
+    useEffect(() => {
+        form.setValues(() => ({
+            search: router?.query?.search?.toString() ?? '',
+        }));
+    }, [router.query]);
 
     return (
         <>
@@ -41,6 +47,7 @@ export default function Results({ websites }: Props) {
                 </Button>
             </form>
             <hr style={{ marginTop: 20, marginBottom: 20 }} />
+            {websites.length === 0 && <div style={{ marginLeft: 20 }}>No results found</div>}
             {websites.map((website) => (
                 <div style={{ margin: 20 }} key={website.url + website.title}>
                     <div>
@@ -52,7 +59,7 @@ export default function Results({ websites }: Props) {
                         <h3 style={{ margin: 0, wordWrap: 'break-word', width: 500 }}>{website.title}</h3>
                     </div>
                     <div>
-                        <p style={{ margin: 0 }}>{website.description}</p>
+                        <p style={{ margin: 0, wordWrap: 'break-word', width: 500 }}>{website.description}</p>
                     </div>
                 </div>
             ))}

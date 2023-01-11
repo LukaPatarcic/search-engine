@@ -1,5 +1,5 @@
 import { PlaywrightCrawler } from 'crawlee';
-import { WebsiteModel } from '../schema/Website';
+import { WebsiteModel } from 'config/src/schema/Website';
 
 export const crawler = new PlaywrightCrawler({
     async requestHandler({ page, enqueueLinks }) {

@@ -1,7 +1,8 @@
 import { Router } from 'express';
-import { WebsiteModel } from '../schema/Website';
+import { WebsiteModel } from 'config/src/schema/Website';
 import { producer } from '../lib/kafka';
 import { v4 as uuidv4 } from 'uuid';
+import { kafka_topic } from 'config/src/kafka';
 const SpellCorrector = require('spelling-corrector');
 const pluralize = require('pluralize');
 
@@ -16,7 +17,7 @@ router.post('/', async (req, res) => {
     const kafkaValues = websites.map((website) => ({ key: uuidv4(), value: website }));
 
     await producer.send({
-        topic: 'crawler',
+        topic: kafka_topic.crawler,
         messages: kafkaValues,
     });
 
@@ -32,10 +33,7 @@ router.get('/', async (req, res) => {
     }
 
     const words = search.split(' ').filter((word) => {
-        if (word.length > 2) {
-            return true;
-        }
-        return false;
+        return word.length > 2;
     });
 
     const searchWords = [];
@@ -45,7 +43,6 @@ router.get('/', async (req, res) => {
 
         spellCorrector.loadDictionary();
 
-        console.log(spellCorrector.correct(word));
         const correct = spellCorrector.correct(word);
         const singular = pluralize.singular(word);
         const plural = pluralize.plural(word);
@@ -53,10 +50,7 @@ router.get('/', async (req, res) => {
         searchWords.push(...[correct, singular, plural]);
     });
 
-    console.log(words);
-
     const results = await WebsiteModel.find({ $text: { $search: words.join(' ').trim() } }).exec();
-    console.log(results.length);
     res.json(results);
 });
 

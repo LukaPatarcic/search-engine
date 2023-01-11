@@ -1,9 +1,6 @@
 version: '2.3'
 
 services:
-  # ############################
-  # EXTERNAL SERVICES
-  # ############################
   mongo:
     container_name: mongo
     image: mongo:4.4.13-focal
